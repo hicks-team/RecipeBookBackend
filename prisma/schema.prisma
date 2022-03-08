@@ -8,13 +8,13 @@ datasource db {
 }
 
 model app_roles {
-  id         Int       @id
+  id         Int          @id
   role       String       @unique(map: "uk_4yak61rfyjr8l0vvud3fa533i") @db.VarChar(255)
   user_roles user_roles[]
 }
 
 model app_user {
-  id             Int           @id
+  id             Int              @id
   created_at     DateTime?        @db.Timestamp(6)
   updated_at     DateTime?        @db.Timestamp(6)
   display_name   String?          @unique(map: "uk_fkrbhagh65rxywp3eh8a64pt8") @db.VarChar(255)
@@ -26,7 +26,7 @@ model app_user {
 }
 
 model direction {
-  id                Int              @id
+  id                Int                 @id
   created_at        DateTime?           @db.Timestamp(6)
   updated_at        DateTime?           @db.Timestamp(6)
   index             Int
@@ -35,7 +35,7 @@ model direction {
 }
 
 model ingredient {
-  id                 Int               @id
+  id                 Int                  @id
   created_at         DateTime?            @db.Timestamp(6)
   updated_at         DateTime?            @db.Timestamp(6)
   name               String?              @db.VarChar(255)
@@ -44,15 +44,8 @@ model ingredient {
   recipe_ingredients recipe_ingredients[] @ignore
 }
 
-model my_system {
-  id                   Int  @id
-  instance_name        String? @db.VarChar(255)
-  logon_message        String? @db.VarChar(255)
-  registration_enabled Boolean
-}
-
 model recipe {
-  id                 Int               @id
+  id                 Int                  @id
   created_at         DateTime?            @db.Timestamp(6)
   updated_at         DateTime?            @db.Timestamp(6)
   cooking_time       String?              @db.VarChar(255)
@@ -62,7 +55,7 @@ model recipe {
   emoji              String?              @db.VarChar(255)
   name               String?              @db.VarChar(255)
   servings           Int
-  author_id          Int?            
+  author_id          Int?
   app_user           app_user?            @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk9moeuwu3etkpyxwvn1tcn3dii")
   recipe_directions  recipe_directions[]  @ignore
   recipe_ingredients recipe_ingredients[] @ignore
@@ -89,31 +82,8 @@ model recipe_ingredients {
   @@ignore
 }
 
-model spring_session {
-  primary_id                String                      @id(map: "spring_session_pk") @db.Char(36)
-  session_id                String                      @unique(map: "spring_session_ix1") @db.Char(36)
-  creation_time             Int
-  last_access_time          Int
-  max_inactive_interval     Int
-  expiry_time               Int
-  principal_name            String?                     @db.VarChar(100)
-  spring_session_attributes spring_session_attributes[]
-
-  @@index([expiry_time], map: "spring_session_ix2")
-  @@index([principal_name], map: "spring_session_ix3")
-}
-
-model spring_session_attributes {
-  session_primary_id String         @db.Char(36)
-  attribute_name     String         @db.VarChar(200)
-  attribute_bytes    Bytes
-  spring_session     spring_session @relation(fields: [session_primary_id], references: [primary_id], onDelete: Cascade, onUpdate: NoAction, map: "spring_session_attributes_fk")
-
-  @@id([session_primary_id, attribute_name], map: "spring_session_attributes_pk")
-}
-
 model user_favorites {
-  id        Int    @id
+  id        Int       @id
   recipe_id Int?
   user_id   Int?
   recipe    recipe?   @relation(fields: [recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkq2u1ax90qdc1j0phvrr6g3nuh")

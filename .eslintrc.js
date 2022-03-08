@@ -11,12 +11,13 @@ module.exports = {
   },
   plugins: ['@typescript-eslint', 'prettier'],
   rules: {
-    'prettier/prettier': ['error', 
+    'prettier/prettier': [
+      'error',
       {
-        'singleQuote': true,
-        'endOfLine': 'auto',
-        'printWidth': 120
-      }
+        singleQuote: true,
+        endOfLine: 'auto',
+        printWidth: 120,
+      },
     ],
   },
 };

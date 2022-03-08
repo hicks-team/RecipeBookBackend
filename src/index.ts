@@ -4,6 +4,7 @@ import { serve, setup } from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 
 import restServer from '../servers/rest';
+import graphqlServer from '../servers/graphql';
 
 (async () => {
   const prisma = new PrismaClient();
@@ -18,11 +19,12 @@ import restServer from '../servers/rest';
         version: '0.0.1',
       },
     },
-    apis: ['./servers/rest.ts'],
+    apis: ['./rest/recipe.ts', './servers/rest.ts'],
   });
 
   app.use('/rest-docs', serve, setup(spec));
   restServer(app, prisma);
+  graphqlServer(app);
 
   app.listen(port, () => {
     console.log('server start');
