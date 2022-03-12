@@ -12,14 +12,14 @@ const seed = async () => {
     prisma.recipe.deleteMany(),
     prisma.ingredient.deleteMany(),
     prisma.direction.deleteMany(),
-    prisma.user_favorites.deleteMany(),
+    prisma.userFavorites.deleteMany(),
   ]);
 
   // pre-populate users from auth?
 
   const user = await prisma.app_user.create({
     data: {
-      display_name: 'adminGuy123',
+      displayName: 'adminGuy123',
     },
   });
 
@@ -27,14 +27,16 @@ const seed = async () => {
     recipes.map((r) =>
       prisma.recipe.create({
         data: {
-          cooking_time: r.cookingTime,
+          cookingTime: r.cookingTime,
           course: r.course,
-          description: r.description || 'no description found',
+          description:
+            r.description ||
+            'This is where a description would go...if we HAD one! It would tell you what you can expect from this recipe.',
           difficulty: Number(r.difficulty),
           emoji: r.emoji,
           name: r.name,
           servings: Number(r.servings),
-          author_id: user.id,
+          authorId: user.id,
           directions: {
             create: r.directions.map((d, index) => ({ index, text: d.text })),
           },

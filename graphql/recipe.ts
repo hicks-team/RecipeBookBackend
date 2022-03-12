@@ -1,5 +1,5 @@
-import { PrismaClient } from '@prisma/client';
 import { gql } from 'apollo-server-core';
+import prisma from '../src/prisma';
 
 const typeDefs = gql`
   type Recipe {
@@ -26,8 +26,6 @@ const typeDefs = gql`
 // recipe_directions  recipe_directions[]  @ignore
 // recipe_ingredients recipe_ingredients[] @ignore
 // user_favorites
-
-const prisma = new PrismaClient();
 
 const resolvers = {
   Query: {

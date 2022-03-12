@@ -29,10 +29,10 @@ function restServer(app: Express, prisma: PrismaClient) {
   app.get('/api/recipe', async (req, res) => {
     const recipes = await prisma.recipe.findMany({
       include: {
-        app_user: true,
+        author: true,
         directions: true,
         ingredients: true,
-        user_favorites: true,
+        userFavorites: true,
       },
     });
     res.json(recipes);

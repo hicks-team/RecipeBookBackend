@@ -1,13 +1,12 @@
-import { PrismaClient } from '@prisma/client';
 import express from 'express';
 import { serve, setup } from 'swagger-ui-express';
 import swaggerJSDoc from 'swagger-jsdoc';
 
+import prisma from './prisma';
 import restServer from '../servers/rest';
 import graphqlServer from '../servers/graphql';
 
 (async () => {
-  const prisma = new PrismaClient();
   const port = process.env.PORT || 8989;
   const app = express();
 
