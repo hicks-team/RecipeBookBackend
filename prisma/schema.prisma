@@ -8,51 +8,51 @@ datasource db {
 }
 
 model app_user {
-  id              String            @id @default(uuid())
-  created_at     DateTime  @default(now()) @db.Timestamp
-  updated_at     DateTime  @updatedAt @db.Timestamp
+  id             String           @id @default(uuid())
+  created_at     DateTime         @default(now()) @db.Timestamp
+  updated_at     DateTime         @updatedAt @db.Timestamp
   display_name   String?          @unique
   recipe         recipe[]
   user_favorites user_favorites[]
 }
 
 model direction {
-  id              String            @id @default(uuid())
-   recipe_id     String
- created_at        DateTime            @default(now()) @db.Timestamp
-  updated_at        DateTime            @updatedAt @db.Timestamp
-  index             Int
-  text              String        
-  recipe recipe @relation(fields: [recipe_id], references: [id])     
+  id         String   @id @default(uuid())
+  recipe_id  String
+  created_at DateTime @default(now()) @db.Timestamp
+  updated_at DateTime @updatedAt @db.Timestamp
+  index      Int
+  text       String
+  recipe     recipe   @relation(fields: [recipe_id], references: [id])
 }
 
 model ingredient {
-  id              String            @id @default(uuid())
-   recipe_id     String
- created_at         DateTime            @default(now()) @db.Timestamp
-  updated_at         DateTime            @updatedAt @db.Timestamp
-  name               String           
-  quantity           String           
-  unit               String?           
-  recipe recipe @relation(fields: [recipe_id], references: [id])     
+  id         String   @id @default(uuid())
+  recipe_id  String
+  created_at DateTime @default(now()) @db.Timestamp
+  updated_at DateTime @updatedAt @db.Timestamp
+  name       String
+  quantity   String
+  unit       String?
+  recipe     recipe   @relation(fields: [recipe_id], references: [id])
 }
 
 model recipe {
-  id              String            @id @default(uuid())
-  created_at         DateTime             @default(now()) @db.Timestamp
-  updated_at         DateTime             @updatedAt @db.Timestamp
-  cooking_time       String?              
-  course             String?              
-  description        String?              
-  difficulty         Int
-  emoji              String?              
-  name               String?              
-  servings           Int
-  author_id          String
-  app_user           app_user           @relation(fields: [author_id], references: [id])
-  directions  direction[]  
-  ingredients ingredient[] 
-  user_favorites     user_favorites[]
+  id             String           @id @default(uuid())
+  created_at     DateTime         @default(now()) @db.Timestamp
+  updated_at     DateTime         @updatedAt @db.Timestamp
+  cooking_time   String?
+  course         String?
+  description    String?
+  difficulty     Int
+  emoji          String?
+  name           String?
+  servings       Int
+  author_id      String
+  app_user       app_user         @relation(fields: [author_id], references: [id])
+  directions     direction[]
+  ingredients    ingredient[]
+  user_favorites user_favorites[]
 }
 
 model user_favorites {
@@ -60,6 +60,6 @@ model user_favorites {
   recipe_id String
   recipe    recipe   @relation(fields: [recipe_id], references: [id])
   app_user  app_user @relation(fields: [user_id], references: [id])
-  
+
   @@id([user_id, recipe_id])
 }
