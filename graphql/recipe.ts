@@ -32,7 +32,7 @@ const prisma = new PrismaClient();
 const resolvers = {
   Query: {
     recipes: () => prisma.recipe.findMany(),
-    recipe: (id: number) =>
+    recipe: (id: string) =>
       prisma.recipe.findFirst({
         where: {
           id,
