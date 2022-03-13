@@ -29,10 +29,10 @@ function restServer(app: Express, prisma: PrismaClient) {
   app.get('/api/recipe', async (req, res) => {
     const recipes = await prisma.recipe.findMany({
       include: {
-        app_user: true,
-        // recipe_directions: true,
-        // recipe_ingredients: true,
-        user_favorites: true,
+        author: true,
+        directions: true,
+        ingredients: true,
+        userFavorites: true,
       },
     });
     res.json(recipes);
@@ -63,7 +63,7 @@ function restServer(app: Express, prisma: PrismaClient) {
     const { id } = req.params;
     const recipe = await prisma.recipe.findFirst({
       where: {
-        id: Number(id),
+        id,
       },
     });
     res.json(recipe);

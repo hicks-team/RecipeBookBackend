@@ -7,94 +7,60 @@ datasource db {
   url      = env("DATABASE_URL")
 }
 
-model app_roles {
-  id         Int          @id
-  role       String       @unique(map: "uk_4yak61rfyjr8l0vvud3fa533i") @db.VarChar(255)
-  user_roles user_roles[]
-}
-
 model app_user {
-  id             Int              @id
-  created_at     DateTime?        @db.Timestamp(6)
-  updated_at     DateTime?        @db.Timestamp(6)
-  display_name   String?          @unique(map: "uk_fkrbhagh65rxywp3eh8a64pt8") @db.VarChar(255)
-  password       String           @db.VarChar(255)
-  username       String           @unique(map: "uk_3k4cplvh82srueuttfkwnylq0") @db.VarChar(255)
-  recipe         recipe[]
-  user_favorites user_favorites[]
-  user_roles     user_roles[]
+  id            String          @id @default(uuid())
+  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamp
+  updatedAt     DateTime        @updatedAt @map("updated_at") @db.Timestamp
+  displayName   String?         @unique @map("display_name")
+  recipe        recipe[]
+  userFavorites userFavorites[]
 }
 
 model direction {
-  id                Int                 @id
-  created_at        DateTime?           @db.Timestamp(6)
-  updated_at        DateTime?           @db.Timestamp(6)
-  index             Int
-  text              String?             @db.VarChar(1024)
-  recipe_directions recipe_directions[] @ignore
+  id        String   @id @default(uuid())
+  recipeId  String   @map("recipe_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp
+  index     Int
+  text      String
+  recipe    recipe   @relation(fields: [recipeId], references: [id])
 }
 
 model ingredient {
-  id                 Int                  @id
-  created_at         DateTime?            @db.Timestamp(6)
-  updated_at         DateTime?            @db.Timestamp(6)
-  name               String?              @db.VarChar(255)
-  quantity           String?              @db.VarChar(255)
-  unit               String?              @db.VarChar(255)
-  recipe_ingredients recipe_ingredients[] @ignore
+  id        String   @id @default(uuid())
+  recipeId  String   @map("recipe_id")
+  createdAt DateTime @default(now()) @map("created_at") @db.Timestamp
+  updatedAt DateTime @updatedAt @map("updated_at") @db.Timestamp
+  name      String
+  quantity  String
+  unit      String?
+  recipe    recipe   @relation(fields: [recipeId], references: [id])
 }
 
 model recipe {
-  id                 Int                  @id
-  created_at         DateTime?            @db.Timestamp(6)
-  updated_at         DateTime?            @db.Timestamp(6)
-  cooking_time       String?              @db.VarChar(255)
-  course             String?              @db.VarChar(255)
-  description        String?              @db.VarChar(1024)
-  difficulty         Int
-  emoji              String?              @db.VarChar(255)
-  name               String?              @db.VarChar(255)
-  servings           Int
-  author_id          Int?
-  app_user           app_user?            @relation(fields: [author_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk9moeuwu3etkpyxwvn1tcn3dii")
-  recipe_directions  recipe_directions[]  @ignore
-  recipe_ingredients recipe_ingredients[] @ignore
-  user_favorites     user_favorites[]
+  id            String          @id @default(uuid())
+  createdAt     DateTime        @default(now()) @map("created_at") @db.Timestamp
+  updatedAt     DateTime        @updatedAt @map("updated_at") @db.Timestamp
+  cookingTime   String?         @map("cooking_time")
+  course        String?
+  description   String?
+  difficulty    Int
+  emoji         String?
+  name          String?
+  servings      Int
+  authorId      String          @map("author_id")
+  author        app_user        @relation(fields: [authorId], references: [id])
+  directions    direction[]
+  ingredients   ingredient[]
+  userFavorites userFavorites[]
 }
 
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
-model recipe_directions {
-  recipe_id     Int
-  directions_id Int
-  direction     direction @relation(fields: [directions_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fktm49omm4rc2xouu0e7bwwglvh")
-  recipe        recipe    @relation(fields: [recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkkopnyxdjmwwlt5vlvw4rd28gy")
+model userFavorites {
+  userId   String   @map("user_id")
+  recipeId String   @map("recipe_id")
+  recipe   recipe   @relation(fields: [recipeId], references: [id])
+  author   app_user @relation(fields: [userId], references: [id])
 
-  @@ignore
-}
-
-/// The underlying table does not contain a valid unique identifier and can therefore currently not be handled by the Prisma Client.
-model recipe_ingredients {
-  recipe_id      Int
-  ingredients_id Int
-  ingredient     ingredient @relation(fields: [ingredients_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkg8ssng1dqiwgcptjptldels74")
-  recipe         recipe     @relation(fields: [recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkhnsmvxdlwxqq6x2wbgnoef5gr")
-
-  @@ignore
-}
-
-model user_favorites {
-  id        Int       @id
-  recipe_id Int?
-  user_id   Int?
-  recipe    recipe?   @relation(fields: [recipe_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkq2u1ax90qdc1j0phvrr6g3nuh")
-  app_user  app_user? @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fko3noc049cidpnky8k7638agel")
-}
-
-model user_roles {
-  user_id   Int
-  role_id   Int
-  app_roles app_roles @relation(fields: [role_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fkihg20vygk8qb8lw0s573lqsmq")
-  app_user  app_user  @relation(fields: [user_id], references: [id], onDelete: NoAction, onUpdate: NoAction, map: "fk6fql8djp64yp4q9b3qeyhr82b")
-
-  @@id([user_id, role_id])
+  @@id([userId, recipeId])
+  @@map("user_favorites")
 }
