@@ -1,31 +1,19 @@
 import express from 'express';
+import cors from 'cors';
+import morgan from 'morgan';
 import { serve, setup } from 'swagger-ui-express';
-import swaggerJSDoc from 'swagger-jsdoc';
+import {spec} from './swagger';
+import router from './api';
 
-import prisma from './prisma';
-import restServer from '../servers/rest';
-import graphqlServer from '../servers/graphql';
+const port = process.env.PORT || 8989;
+const app = express();
 
-(async () => {
-  const port = process.env.PORT || 8989;
-  const app = express();
+app.use(cors());
 
-  const spec = swaggerJSDoc({
-    definition: {
-      openapi: '3.0.0',
-      info: {
-        title: 'Recipe Book',
-        version: '0.0.1',
-      },
-    },
-    apis: ['./rest/recipe.ts', './servers/rest.ts'],
-  });
+app.use(morgan('dev'));
+app.use('/docs', serve, setup(spec));
+app.use('/api', router);
 
-  app.use('/rest-docs', serve, setup(spec));
-  restServer(app, prisma);
-  graphqlServer(app);
-
-  app.listen(port, () => {
-    console.log('server start');
-  });
-})();
+app.listen(port, () => {
+  console.log('server start');
+});

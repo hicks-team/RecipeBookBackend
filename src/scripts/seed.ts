@@ -3,6 +3,8 @@ import recipes from './recipes.json';
 
 const prisma = new PrismaClient();
 
+const DEFAULT_DESCRIPTION = 'This is where a description would go...if we HAD one! It would tell you what you can expect from this recipe.';
+
 const seed = async () => {
   console.log('seeding started');
 
@@ -29,9 +31,7 @@ const seed = async () => {
         data: {
           cookingTime: r.cookingTime,
           course: r.course,
-          description:
-            r.description ||
-            'This is where a description would go...if we HAD one! It would tell you what you can expect from this recipe.',
+          description: r.description || DEFAULT_DESCRIPTION,
           difficulty: Number(r.difficulty),
           emoji: r.emoji,
           name: r.name,
