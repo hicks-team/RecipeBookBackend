@@ -14,5 +14,5 @@ app.use('/api', router);
 app.get('/hello', async (req, res) => res.json({message: 'hello'}) )
 
 app.listen(port, () => {
-  console.log('server start');
+  console.log('server started');
 });
