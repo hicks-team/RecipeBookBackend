@@ -28,15 +28,19 @@ router.get('/hello', (req, res) => {
  *
  */
 router.get('/recipe', async (req, res) => {
-  const recipes = await prisma.recipe.findMany({
-    include: {
-      author: { select: { id: true, displayName: true } },
-      directions: true,
-      ingredients: true,
-    },
-    orderBy: { createdAt: 'desc' },
-  });
-  res.json(recipes);
+  try {
+    const recipes = await prisma.recipe.findMany({
+      include: {
+        author: { select: { id: true, displayName: true } },
+        directions: true,
+        ingredients: true,
+      },
+      orderBy: { createdAt: 'desc' },
+    });
+    res.json(recipes);
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 /**
@@ -61,18 +65,22 @@ router.get('/recipe', async (req, res) => {
  *
  */
 router.get('/recipe/:id', async (req, res) => {
-  const { id } = req.params;
-  const recipe = await prisma.recipe.findFirst({
-    where: {
-      id,
-    },
-    include: {
-      author: { select: { id: true, displayName: true } },
-      directions: true,
-      ingredients: true,
-    },
-  });
-  res.json(recipe);
+  try {
+    const { id } = req.params;
+    const recipe = await prisma.recipe.findFirst({
+      where: {
+        id,
+      },
+      include: {
+        author: { select: { id: true, displayName: true } },
+        directions: true,
+        ingredients: true,
+      },
+    });
+    res.json(recipe);
+  } catch (e) {
+    console.error(e);
+  }
 });
 
 export default router;
